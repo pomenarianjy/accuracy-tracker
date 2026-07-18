@@ -172,4 +172,3 @@ def compile_all_sources(ticker_symbol):
 
         scorecard_rows = [
             ["1. Wall Street Consensus (Mean Target)", f"{mean_t:,.2f} {currency}", f"{((mean_t/current_price)-1)*100:+.2f}%", f"Aggregated baseline target from {num_opinions} registered research institutions."],
-
