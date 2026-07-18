@@ -14,7 +14,7 @@ st.title("🎯 The Predictors Scorecard")
 st.markdown("### Investment Views Accuracy Tracking, by A Single Family Office")
 st.divider()
 
-# 2. Asset Matrix Directory
+# 2. Flat Asset Matrix Directory
 TICKER_DETAILS = {
     "AAPL": {"en": "Apple Inc.", "orig": "Apple Inc.", "base": 224.50, "currency": "USD", "ytd": "+14.25%", "opinions": 38, "m1": 25.4, "m2": -8.3, "m3": 48.2},
     "MSFT": {"en": "Microsoft Corporation", "orig": "Microsoft Corporation", "base": 418.20, "currency": "USD", "ytd": "+11.80%", "opinions": 45, "m1": 28.1, "m2": -5.1, "m3": 52.4},
@@ -45,7 +45,7 @@ TICKER_DETAILS = {
     "AMKR": {"en": "Amkor Technology Inc.", "orig": "Amkor Technology Inc.", "base": 29.50, "currency": "USD", "ytd": "-2.10%", "opinions": 11, "m1": 14.2, "m2": -12.0, "m3": 22.4},
     "INTC": {"en": "Intel Corporation", "orig": "Intel Corporation", "base": 23.80, "currency": "USD", "ytd": "-38.40%", "opinions": 33, "m1": -4.2, "m2": -45.1, "m3": -12.0},
     "8035.T": {"en": "Tokyo Electron Limited", "orig": "東京エレクトロン株式会社", "base": 23450.0, "currency": "JPY", "ytd": "+16.80%", "opinions": 22, "m1": 22.4, "m2": -11.2, "m3": 45.1},
-    "6857.T": {"en": "Advantest Corporation", "orig": "株式会社アドバンテスト", "base": 9180.0, "currency": "JPY", "ytd": "+48.20%", "opinions": 21, "m1": 34.2, "m2": -6.0, "m3": 59.8},
+    "6857.T": {"en": "Advantest Corporation", "orig": "株式会社アド반테스트", "base": 9180.0, "currency": "JPY", "ytd": "+48.20%", "opinions": 21, "m1": 34.2, "m2": -6.0, "m3": 59.8},
     "6146.T": {"en": "Disco Corporation", "orig": "株式会社ディスコ", "base": 41200.0, "currency": "JPY", "ytd": "+32.40%", "opinions": 19, "m1": 29.4, "m2": -8.1, "m3": 44.2},
     "6920.T": {"en": "Lasertec Corporation", "orig": "レーザーテック株式会社", "base": 18420.0, "currency": "JPY", "ytd": "-14.20%", "opinions": 20, "m1": 12.1, "m2": -24.0, "m3": 19.5},
     "7735.T": {"en": "SCREEN Holdings Co., Ltd.", "orig": "SCREENホールディングス", "base": 9760.0, "currency": "JPY", "ytd": "+11.40%", "opinions": 16, "m1": 18.7, "m2": -12.3, "m3": 28.4},
@@ -66,19 +66,32 @@ TICKER_DETAILS = {
     "005930.KS": {"en": "Samsung Electronics Co., Ltd.", "orig": "삼성전자주식회사", "base": 57800.0, "currency": "KRW", "ytd": "-14.30%", "opinions": 35, "m1": 11.0, "m2": -21.4, "m3": 22.5}
 }
 
-CATEGORIZED_TICKERS = {
-    "🌟 Magnificent 7": ["AAPL", "MSFT", "GOOGL", "AMZN", "META", "TSLA", "NVDA"],
-    "🔌 SOXX ETF & Semiconductor": ["SOXX", "AVGO", "AMD", "QCOM", "TXN", "MU", "AMAT", "LRCX", "ADI", "KLAC", "MRVL", "NXPI", "MCHP", "MPWR", "ON", "SWKS", "QRVO", "CRUS", "TER", "AMKR", "INTC"],
-    "🇯🇵 Japan Semiconductor": ["8035.T", "6857.T", "6146.T", "6920.T", "7735.T", "6525.T", "285A.T", "6723.T", "4062.T", "6963.T"],
-    "🇹🇼 Taiwan Semiconductor": ["2330.TW", "2303.TW", "5347.TWO", "2454.TW", "3034.TW", "2379.TW", "3661.TW", "3711.TW"],
-    "🇰🇷 Korea Semiconductor": ["000660.KS", "005930.KS"]
-}
+# 3. Clean Flattened Options Selector List
+ticker_keys = list(TICKER_DETAILS.keys())
+display_options = [f"{k} | {TICKER_DETAILS[k]['en']}" for k in ticker_keys]
 
-# 3. Double-Layer Layout Selection Dropdown
-dropdown_options = []
-label_to_ticker = {}
+selected_option = st.selectbox(
+    "Select Target Asset Portfolio:",
+    options=display_options,
+    index=0
+)
 
-for category, tickers_list in CATEGORIZED_TICKERS.items():
-    dropdown_options.append(f"--- {category} ---")
-    for ticker_item in tickers_list:
+# 4. Extract Selected Parameters Safe Engine
+selected_ticker = selected_option.split(" | ")[0]
+static_details = TICKER_DETAILS[selected_ticker]
 
+live_price = float(static_details["base"])
+asset_currency = str(static_details["currency"])
+opinions = int(static_details["opinions"])
+live_ytd = str(static_details["ytd"])
+
+mean_t = live_price * 1.12
+high_t = live_price * 1.28
+low_t = live_price * 0.86
+
+pct_mean = ((mean_t / live_price) - 1.0) * 100.0
+pct_high = ((high_t / live_price) - 1.0) * 100.0
+pct_low = ((low_t / live_price) - 1.0) * 100.0
+
+# 5. Core Tables Generation Logic
+scorecard_list = [
