@@ -33,7 +33,7 @@ if 'prediction_db' not in st.session_state:
 
         # --- TOP 20 SOXX SEMICONDUCTOR HOLDINGS (US LISTED) ---
         ['AVGO', 'Broadcom Inc.', 'Harlan Sur (JPMorgan)', 'JPMorgan Research', 75, 'Custom application-specific integrated circuit (ASIC) pipelines locking in large cloud infrastructure commitments', 'Met Target'],
-        ['QCOM', 'Qualcomm Inc.', 'Chris Caso (Raymond James)', 'Raymond James Financial', 62, 'On-device machine learning engine deployments generating consistent royalty premium baselines', 'Live Window'],
+        ['QCOM', 'Qualcomm Inc.', 'Chris Caso (Raymond James)', 'Raymond James Financial', 62, 'On-device machine learning engine deployments generating consistent royalty architecture premium baselines', 'Live Window'],
         ['TXN', 'Texas Instruments', 'Vivek Arya (Bank of America)', 'Bank of America Global', 56, 'Industrial inventory pipeline channels approaching a cyclical clearing bottom phase', 'Live Window'],
         ['MU', 'Micron Technology', 'Tom Lee (Fundstrat)', 'Fundstrat Global Advisors', 78, 'High-bandwidth memory architecture supply completely sold out past current fiscal calendar windows', 'Met Target'],
         ['AMAT', 'Applied Materials', 'Atif Malik (Citi)', 'Citi Research', 64, 'Gate-all-around equipment manufacturing contract wins driving strong baseline visibility', 'Verified Metric'],
@@ -87,4 +87,5 @@ user_stock = st.selectbox(
 filtered_df = st.session_state.prediction_db[st.session_state.prediction_db['Stock Code'] == user_stock]
 
 if not filtered_df.empty:
+
 
