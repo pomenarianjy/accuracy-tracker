@@ -85,7 +85,7 @@ CATEGORIZED_TICKERS = {
     "🇰🇷 Korea Semiconductor Leaders": ["000660.KS", "005930.KS"]
 }
 
-# 4. Independent Global Helper Functions 
+# Helper Functions for Data Streams
 def get_options_signal(ticker_obj):
     try:
         expirations = ticker_obj.options
@@ -97,7 +97,7 @@ def get_options_signal(ticker_obj):
             return f"Bullish (Ratio: {ratio:.2f}x)" if ratio > 1.2 else f"Bearish/Neutral (Ratio: {ratio:.2f}x)"
     except:
         pass
-    return "Neutral / Data Stream Delayed"
+    return "Neutral / Data Stream N/A"
 
 def get_insider_signal(ticker_obj):
     try:
@@ -132,7 +132,7 @@ def get_media_signal(ticker_obj):
         pass
     return "Neutral Media Coverage Profile"
 
-# 5. Build Dropdown Layout Map
+# Build Categorized Dropdown List Map
 dropdown_options = []
 label_to_ticker = {}
 
@@ -150,7 +150,7 @@ selected_display = st.selectbox(
     index=dropdown_options.index("   META | Meta Platforms Inc.") if "   META | Meta Platforms Inc." in dropdown_options else 1
 )
 
-# 6. Core Multi-Source Pipeline Execution
+# Core Multi-Source Cache Pipeline
 @st.cache_data(ttl=1800)
 def compile_all_sources(ticker_symbol):
     try:
