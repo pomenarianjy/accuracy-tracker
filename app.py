@@ -3,7 +3,7 @@ import yfinance as yf
 import pandas as pd
 import datetime
 
-# 1. Clean Native Page Configuration
+# 1. Page Configuration
 st.set_page_config(
     page_title="The Predictor Scorecard | Global Semi Hub",
     page_icon="🎯",
@@ -124,7 +124,7 @@ def compile_all_sources(ticker_symbol):
         try:
             expirations = t.options
             if expirations:
-                opt_chain = t.option_chain(expirations[0])
+                opt_chain = t.option_chain(expirations)
                 calls_vol = opt_chain.calls['volume'].sum()
                 puts_vol = opt_chain.puts['volume'].sum()
                 ratio = calls_vol / puts_vol if puts_vol > 0 else 1.0
@@ -163,4 +163,3 @@ def compile_all_sources(ticker_symbol):
                 b_score = sum(text_blob.count(w) for w in bull_words)
                 r_score = sum(text_blob.count(w) for w in bear_words)
                 if b_score > r_score:
-
