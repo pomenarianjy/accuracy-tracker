@@ -85,7 +85,7 @@ CATEGORIZED_TICKERS = {
     "🇰🇷 Korea Semiconductor Leaders": ["000660.KS", "005930.KS"]
 }
 
-# 4. Independent Global Helper Functions 
+# Helper Functions for Data Streams
 def get_options_signal(ticker_obj):
     try:
         expirations = ticker_obj.options
