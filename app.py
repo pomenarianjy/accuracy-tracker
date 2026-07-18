@@ -62,7 +62,7 @@ TICKER_DETAILS = {
     "6525.T": {"en": "Kokusai Electric Corporation", "orig": "株式会社KOKUSAI ELECTRIC (TYO: 6525)"},
     "285A.T": {"en": "Kioxia Holdings Corporation", "orig": "キオクシアホールディングス株式会社 (TYO: 285A)"},
     "6723.T": {"en": "Renesas Electronics Corporation", "orig": "ルネサスエレクトロニクス株式会社 (TYO: 6723)"},
-    "4062.T": {"en": "Ibiden Co., Ltd.", "orig": "イ比電株式会社 (TYO: 4062)"},
+    "4062.T": {"en": "Ibiden Co., Ltd.", "orig": "イビデン株式会社 (TYO: 4062)"},
     "6963.T": {"en": "ROHM Co., Ltd.", "orig": "ローム株式会社 (TYO: 6963)"},
     
     # Taiwan Semiconductor Leaders
@@ -168,7 +168,7 @@ def get_media_signal(ticker_obj):
     return "Standard Baseline Press Coverage Profiles"
 
 # ==========================================
-# 5. HIGH-STABILITY MULTI-SOURCE PIPELINE
+# 5. FLAT, HIGH-STABILITY MULTI-SOURCE PIPELINE
 # ==========================================
 @st.cache_data(ttl=1800)
 def fetch_robust_market_data(ticker_symbol):
@@ -198,5 +198,4 @@ def fetch_robust_market_data(ticker_symbol):
         low_t = live_price * 0.90
         opinions = 0
         
-        try:
 
