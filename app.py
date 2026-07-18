@@ -110,8 +110,8 @@ with st.spinner("Compiling institutional records..."):
     
     # Base Price Parsing
     hist_recent = t.history(period="5d")
-    dict_recent = hist_recent.to_dict(orient="records")
-    live_price = float(dict_recent[-1].get("Close")) if dict_recent else 1.0
+    recent_list = hist_recent["Close"].dropna().to_list()
+    live_price = float(recent_list.pop()) if recent_list else 1.0
     
     currency_map = {".T": "JPY", ".TW": "TWD", ".TWO": "TWD", ".KS": "KRW"}
     asset_currency = "USD"
@@ -137,24 +137,23 @@ with st.spinner("Compiling institutional records..."):
     pct_high = ((high_t / live_price) - 1.0) * 100.0
     pct_low = ((low_t / live_price) - 1.0) * 100.0
     
-    # Structured analyst mapping layout matrix paths
     scorecard_list = [
         {"Core Forecast Tier": "Wall Street Mean Consensus", "Research House / KOL Source Name": "Morgan Stanley Institutional Research", "Target Price": f"{mean_t:,.2f} {asset_currency}", "Implied Deviation": f"{pct_mean:+.2f}%", "Methodology Context Model": f"Aggregated baseline tracker mapping {opinions} core consensus inputs."},
         {"Core Forecast Tier": "Wall Street Mean Consensus", "Research House / KOL Source Name": "Goldman Sachs Macro Asset Allocation", "Target Price": f"{(mean_t * 1.02):,.2f} {asset_currency}", "Implied Deviation": f"{(pct_mean + 2.00):+.2f}%", "Methodology Context Model": "Multi-factor fundamental intrinsic matrix adjustment views."},
-        
         {"Core Forecast Tier": "Institutional Peak Target", "Research House / KOL Source Name": "JPMorgan Chase Tactical Growth Horizon", "Target Price": f"{high_t:,.2f} {asset_currency}", "Implied Deviation": f"{pct_high:+.2f}%", "Methodology Context Model": "Optimal case multiple expansion scaling parameters projection models."},
         {"Core Forecast Tier": "Institutional Peak Target", "Research House / KOL Source Name": "Bank of America Merrill Lynch Alpha Edge", "Target Price": f"{(high_t * 1.03):,.2f} {asset_currency}", "Implied Deviation": f"{(pct_high + 3.00):+.2f}%", "Methodology Context Model": "Peak margin capacity scenario valuation modeling tracking vectors."},
-        
         {"Core Forecast Tier": "Institutional Floor Target", "Research House / KOL Source Name": "Citi Investment Advisory Risk Managed Floor", "Target Price": f"{low_t:,.2f} {asset_currency}", "Implied Deviation": f"{pct_low:+.2f}%", "Methodology Context Model": "Risk-weighted multiple compressed pricing floors mapping bottoms."},
         {"Core Forecast Tier": "Institutional Floor Target", "Research House / KOL Source Name": "UBS Wealth Management Deflation Support Case", "Target Price": f"{(low_t * 0.97):,.2f} {asset_currency}", "Implied Deviation": f"{(pct_low - 3.00):+.2f}%", "Methodology Context Model": "Macro cyclical demand dampening margin contraction risk floor profiles."}
     ]
     df_scorecard = pd.DataFrame(scorecard_list)
     
-    # Bracketless dictionary-mapped performance extraction parameters
+    # BRACKETLESS YTD METHOD (Pops out values dynamically to stay perfectly inline)
     live_ytd = "Delayed Feeds Node"
     current_year = datetime.datetime.now().year
     hist_ytd = t.history(start=datetime.datetime(current_year, 1, 1))
     if not hist_ytd.empty:
-        dict_ytd = hist_ytd.to_dict(orient="index")
-        sorted_keys_ytd = sorted(dict_ytd.keys())
-        if len(sorted_keys_ytd) > 1:
+        ytd_close_list = hist_ytd["Close"].dropna().to_list()
+        if len(ytd_close_list) > 1:
+            ytd_p_start = float(ytd_close_list.pop(0))
+            ytd_p_end = float(ytd_close_list.pop())
+
