@@ -52,7 +52,7 @@ TICKER_DETAILS = {
     
     # Japan Semiconductor Leaders
     "8035.T": {"en": "Tokyo Electron Limited", "orig": "東京エレクトロン株式会社 (TYO: 8035)", "symbol": "8035.T"},
-    "6857.T": {"en": "Advantest Corporation", "orig": "株式会社アド반테스트 (TYO: 6857)", "symbol": "6857.T"},
+    "6857.T": {"en": "Advantest Corporation", "orig": "株式会社アドバンテスト (TYO: 6857)", "symbol": "6857.T"},
     "6146.T": {"en": "Disco Corporation", "orig": "株式会社ディスコ (TYO: 6146)", "symbol": "6146.T"},
     "6920.T": {"en": "Lasertec Corporation", "orig": "レーザーテック株式会社 (TYO: 6920)", "symbol": "6920.T"},
     "7735.T": {"en": "SCREEN Holdings Co., Ltd.", "orig": "SCREENホールディングス (TYO: 7735)", "symbol": "7735.T"},
@@ -85,7 +85,7 @@ CATEGORIZED_TICKERS = {
     "🇰🇷 Korea Semiconductor Leaders": ["000660.KS", "005930.KS"]
 }
 
-# Building dropdown selections
+# Building dropdown selections mapping cleanly to corporate identifiers
 dropdown_options = []
 label_to_ticker = {}
 
@@ -103,6 +103,55 @@ selected_display = st.selectbox(
     index=dropdown_options.index("   META | Meta Platforms Inc.") if "   META | Meta Platforms Inc." in dropdown_options else 1
 )
 
+# Safe Option Signal Calculation
+def get_options_signal(ticker_obj):
+    try:
+        expirations = ticker_obj.options
+        if expirations:
+            opt_chain = ticker_obj.option_chain(expirations[0])
+            calls_vol = opt_chain.calls['volume'].sum()
+            puts_vol = opt_chain.puts['volume'].sum()
+            ratio = calls_vol / puts_vol if puts_vol > 0 else 1.0
+            return f"Bullish (Ratio: {ratio:.2f}x)" if ratio > 1.2 else f"Bearish/Neutral (Ratio: {ratio:.2f}x)"
+    except:
+        pass
+    return "Neutral / Data Stream Delayed"
+
+# Safe Insider Signal Calculation
+def get_insider_signal(ticker_obj):
+    try:
+        insiders = ticker_obj.insider_transactions
+        if insiders is not None and not insiders.empty:
+            text_col = insiders['Text'].astype(str).str.lower()
+            buy_count = sum(text_col.str.contains('purchase'))
+            sell_count = sum(text_col.str.contains('sale'))
+            if buy_count > sell_count:
+                return f"Net Buying Accumulation (+{buy_count} trades logged)"
+            if sell_count > buy_count:
+                return f"Net Selling Liquidation (-{sell_count} trades logged)"
+    except:
+        pass
+    return "Neutral (No recent executive transactions filed)"
+
+# Safe Headline Sentiment Calculation
+def get_media_signal(ticker_obj):
+    try:
+        news = ticker_obj.news
+        if news:
+            headlines = [n.get('title', '') for n in news]
+            bull_words = ['buy', 'growth', 'surge', 'beat', 'upgrade', 'higher', 'positive']
+            bear_words = ['sell', 'drop', 'risk', 'miss', 'downgrade', 'lower', 'negative']
+            text_blob = " ".join(headlines).lower()
+            b_score = sum(text_blob.count(w) for w in bull_words)
+            r_score = sum(text_blob.count(w) for w in bear_words)
+            if b_score > r_score:
+                return f"Positive Sentiment (Score: +{b_score - r_score})"
+            if r_score > b_score:
+                return f"Negative Sentiment (Score: {b_score - r_score})"
+    except:
+        pass
+    return "Neutral Media Coverage Profile"
+
 # 4. Multi-Source Pipeline
 @st.cache_data(ttl=1800)
 def compile_all_sources(ticker_symbol):
@@ -113,56 +162,17 @@ def compile_all_sources(ticker_symbol):
         currency = info.get('currency', 'USD')
         market_cap = info.get('marketCap', 0)
         
-        # --- SOURCE GROUP A: WALL STREET TARGETS ---
         targets = t.analyst_price_targets
         mean_t = targets.get('mean', current_price)
         high_t = targets.get('high', current_price)
         low_t = targets.get('low', current_price)
         num_opinions = info.get('numberOfAnalystOpinions', 0)
         
-        # --- SOURCE GROUP B: OPTIONS MARKET BIAS ---
-        try:
-            expirations = t.options
-            if expirations:
-                opt_chain = t.option_chain(expirations)
-                calls_vol = opt_chain.calls['volume'].sum()
-                puts_vol = opt_chain.puts['volume'].sum()
-                ratio = calls_vol / puts_vol if puts_vol > 0 else 1.0
-                opt_signal = f"Bullish (Call/Put Ratio: {ratio:.2f}x)" if ratio > 1.2 else f"Bearish/Neutral (Call/Put Ratio: {ratio:.2f}x)"
-            else:
-                opt_signal = "Neutral (No active near-term options chain)"
-        except Exception:
-            opt_signal = "Neutral/Unavailable for alternative exchange layouts"
+        opt_signal = get_options_signal(t)
+        insider_signal = get_insider_signal(t)
+        media_signal = get_media_signal(t)
 
-        # --- SOURCE GROUP C: CORPORATE INSIDER SIGNALS ---
-        try:
-            insiders = t.insider_transactions
-            if insiders is not None and not insiders.empty:
-                buy_count = len(insiders[insiders['Text'].str.contains('Purchase', case=False, na=False)])
-                sell_count = len(insiders[insiders['Text'].str.contains('Sale', case=False, na=False)])
-                if buy_count > sell_count:
-                    insider_signal = f"Net Buying Accumulation (+{buy_count} trades logged)"
-                elif sell_count > buy_count:
-                    insider_signal = f"Net Selling Liquidation (-{sell_count} trades logged)"
-                else:
-                    insider_signal = "Neutral (Balanced executive adjustments)"
-            else:
-                insider_signal = "Neutral (No recent executive transactions filed)"
-        except Exception:
-            insider_signal = "Neutral/Unavailable for alternative exchange layouts"
+        scorecard_rows = [
 
-        # --- SOURCE GROUP D: MEDIA HEADLINE SENTIMENT ALGO ---
-        try:
-            news = t.news
-            if news:
-                headlines = [n.get('title', '') for n in news]
-                bull_words = ['buy', 'growth', 'surge', 'beat', 'upgrade', 'higher', 'positive']
-                bear_words = ['sell', 'drop', 'risk', 'miss', 'downgrade', 'lower', 'negative']
-                text_blob = " ".join(headlines).lower()
-                b_score = sum(text_blob.count(w) for w in bull_words)
-                r_score = sum(text_blob.count(w) for w in bear_words)
-                
-                if b_score > r_score:
-                    media_signal = f"Positive Sentiment (Score: +{b_score - r_score})"
 
 
