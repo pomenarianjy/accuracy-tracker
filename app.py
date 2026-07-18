@@ -9,17 +9,27 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 2. Initialize Persistent App Database
+# 2. Initialize Persistent App Database (Using a completely safe, error-proof list format)
 if 'prediction_db' not in st.session_state:
-    raw_data = {
-        'Stock Code': ['NVDA', 'NVDA', 'NVDA', 'AAPL', 'AAPL', 'AAPL', 'TSLA', 'TSLA', 'TSLA', 'MSFT', 'MSFT', 'BTC', 'BTC'],
-        'Predictor Name': ['Dan Ives (Wedbush)', 'David Kostin (Goldman Sachs)', 'Josh Brown (@Downtown)', 'David Faber (CNBC)', 'Wei Li (BlackRock)', 'Jim Cramer (CNBC)', 'Cathie Wood (ARK Invest)', 'Marko Kolanovic (Ex-JPMorgan)', 'Tavi Costa (Crescat)', 'Matt Levine (Bloomberg)', 'Gergely Orosz (Pragmatic Eng)', 'Lyn Alden', 'Balaji Srinivasan'],
-        'Platform Tier': ['Wedbush Securities', 'Goldman Sachs Research', 'X / Ritholtz Wealth', 'CNBC Investigative', 'BlackRock Strategy', 'CNBC Mad Money', 'ARK Invest CEO', 'Ex-JPMorgan Strategy', 'X / Crescat Capital', 'Bloomberg Opinion', 'LinkedIn / Newsletter', 'Independent Macro', 'X / Tech Futurist'],
-        'Historic Accuracy':,
-        'Specific Prediction': ['Target $160 - AI demand structural hyper-cycle', 'Target $130 - Near-term valuation consolidation', 'Accumulate on dips - Tech momentum remains strong', 'Supply chain optimization pushes target to $260', 'Neutral stance on near-term hardware cycles', 'Buy basket before institutional upgrade cycle', 'Target $2,600 by 2029 on autonomous robotaxis', 'Underperform - Competitive pressures mounting', 'Target $400 - Electric vehicle market saturation', 'Regulatory anti-trust shifts present structural risk', 'Enterprise cloud spending bottomed out', 'Long structural cycle - Monetary debasement hedge', 'Hyper-accelerated sovereign capital flight timeline'],
-        'Status': ['Live Window', 'Met Target', 'Live Window', 'Met Target', 'Live Window', 'Missed Window', 'Structural Drift', 'Missed Target', 'Live Window', 'Verified Metric', 'Verified Metric', 'Met Target', 'Out of Bounds']
-    }
-    st.session_state.prediction_db = pd.DataFrame(raw_data)
+    columns_list = ['Stock Code', 'Predictor Name', 'Platform Tier', 'Historic Accuracy', 'Specific Prediction', 'Status']
+    
+    rows_data = [
+        ['NVDA', 'Dan Ives (Wedbush)', 'Wedbush Securities', 48, 'Target $160 - AI demand structural hyper-cycle', 'Live Window'],
+        ['NVDA', 'David Kostin (Goldman Sachs)', 'Goldman Sachs Research', 59, 'Target $130 - Near-term valuation consolidation', 'Met Target'],
+        ['NVDA', 'Josh Brown (@Downtown)', 'X / Ritholtz Wealth', 54, 'Accumulate on dips - Tech momentum remains strong', 'Live Window'],
+        ['AAPL', 'David Faber (CNBC)', 'CNBC Investigative', 67, 'Supply chain optimization pushes target to $260', 'Met Target'],
+        ['AAPL', 'Wei Li (BlackRock)', 'BlackRock Strategy', 68, 'Neutral stance on near-term hardware cycles', 'Live Window'],
+        ['AAPL', 'Jim Cramer (CNBC)', 'CNBC Mad Money', 38, 'Buy basket before institutional upgrade cycle', 'Missed Window'],
+        ['TSLA', 'Cathie Wood (ARK Invest)', 'ARK Invest CEO', 41, 'Target $2,600 by 2029 on autonomous robotaxis', 'Structural Drift'],
+        ['TSLA', 'Marko Kolanovic (Ex-JPMorgan)', 'Ex-JPMorgan Strategy', 34, 'Underperform - Competitive pressures mounting', 'Missed Target'],
+        ['TSLA', 'Tavi Costa (Crescat)', 'X / Crescat Capital', 52, 'Target $400 - Electric vehicle market saturation', 'Live Window'],
+        ['MSFT', 'Matt Levine (Bloomberg)', 'Bloomberg Opinion', 82, 'Regulatory anti-trust shifts present structural risk', 'Verified Metric'],
+        ['MSFT', 'Gergely Orosz (Pragmatic Eng)', 'LinkedIn / Newsletter', 68, 'Enterprise cloud spending bottomed out', 'Verified Metric'],
+        ['BTC', 'Lyn Alden', 'Independent Macro', 64, 'Long structural cycle - Monetary debasement hedge', 'Met Target'],
+        ['BTC', 'Balaji Srinivasan', 'X / Tech Futurist', 39, 'Hyper-accelerated sovereign capital flight timeline', 'Out of Bounds']
+    ]
+    
+    st.session_state.prediction_db = pd.DataFrame(rows_data, columns=columns_list)
 
 # 3. Executive Header
 st.title("🎯 The Predictor Scorecard")
@@ -81,14 +91,14 @@ with col_side:
         
         if submit_btn:
             if new_ticker and new_name and new_claim:
-                new_row = pd.DataFrame([{
-                    'Stock Code': new_ticker,
-                    'Predictor Name': new_name,
-                    'Platform Tier': new_platform if new_platform else 'Crowdsourced Log',
-                    'Historic Accuracy': int(new_accuracy),
-                    'Specific Prediction': new_claim,
-                    'Status': 'Live Window'
-                }])
+                new_row = pd.DataFrame([[
+                    new_ticker,
+                    new_name,
+                    new_platform if new_platform else 'Crowdsourced Log',
+                    int(new_accuracy),
+                    new_claim,
+                    'Live Window'
+                ]], columns=columns_list)
                 st.session_state.prediction_db = pd.concat([st.session_state.prediction_db, new_row], ignore_index=True)
                 st.success(f"Claim successfully cataloged! Search fields will now display {new_name}'s entry.")
                 st.rerun()
@@ -111,4 +121,3 @@ st.dataframe(
         )
     }
 )
-
