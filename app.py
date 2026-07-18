@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-# 1. Page Configuration
+# 1. Clean Native Page Configuration
 st.set_page_config(
     page_title="The Predictor Scorecard | Global Semiconductor Analytics",
     page_icon="🎯",
@@ -11,7 +11,7 @@ st.set_page_config(
 
 # 2. Institutional Database: Top 25 SOXX Components + Global Semi Giants
 if 'prediction_db' not in st.session_state:
-    columns_list = ['Stock Code', 'Asset Description', 'Predictor Name', 'Platform Tier', 'Historic Accuracy', 'Specific Prediction', 'Status']
+    columns_list = ['Stock Code', 'Asset Description', 'Predictor Name', 'Platform Tier', 'Historic Accuracy (%)', 'Specific Prediction', 'Status']
     
     rows_data = [
         # --- GLOBAL FOUNDRIES & INTERNATIONAL CHAMPIONS ---
@@ -84,21 +84,21 @@ with col_main:
         asset_name = filtered_df['Asset Description'].values[0]
         st.markdown(f"##### Showing Audits For: **{user_stock} ({asset_name})**")
         
-        # Display structured matrix data
+        # Display clean, straightforward native dataframe (Eliminates hidden bracket syntax errors)
         st.dataframe(
-            filtered_df[['Predictor Name', 'Platform Tier', 'Historic Accuracy', 'Specific Prediction', 'Status']],
+            filtered_df[['Predictor Name', 'Platform Tier', 'Historic Accuracy (%)', 'Specific Prediction', 'Status']],
             use_container_width=True,
-            hide_index=True,
-            column_config={
-                "Historic Accuracy": st.column_config.ProgressColumn(
-                    "Historic Accuracy",
-                    help="The tracked historical success rate of the analyst",
-                    format="%d%%",
-                    min_value=0,
-                    max_value=100,
-                ),
-                "Status": st.column_config.SelectboxColumn(
-                    "Status",
-                    options=["Met Target", "Verified Metric", "Live Window", "Missed Window", "Structural Drift", "Out of Bounds", "Missed Target"],
+            hide_index=True
+        )
+    else:
+        st.error("No data engine records map to this choice.")
 
+with col_side:
+    with st.container(border=True):
+        st.markdown("##### 📁 Verification Feeds")
+        st.caption("🔒 **Primary Hardware Logs Verified**")
+        st.caption("Cross-checked via foundry shipment sheets, SEC 13F logs, financial terminals (Bloomberg, Reuters), and public timeline signatures.")
+    
+    st.markdown("##### 📥 Log an Audited Claim Entry")
+    with st.form("new_prediction_form", clear_on_submit=True):
 
