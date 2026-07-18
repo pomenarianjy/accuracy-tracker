@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import datetime
 
-# 1. Native Layout Config
+# 1. Native Page Context Setup
 st.set_page_config(
     page_title="The Predictors Scorecard",
     page_icon="🎯",
@@ -14,7 +14,7 @@ st.title("🎯 The Predictors Scorecard")
 st.markdown("### Investment Views Accuracy Tracking, by A Single Family Office")
 st.divider()
 
-# 2. Flat Asset Matrix Directory
+# 2. Fully Parsed Safe Asset Directory
 TICKER_DETAILS = {
     "AAPL": {"en": "Apple Inc.", "orig": "Apple Inc.", "base": 224.50, "currency": "USD", "ytd": "+14.25%", "opinions": 38, "m1": 25.4, "m2": -8.3, "m3": 48.2},
     "MSFT": {"en": "Microsoft Corporation", "orig": "Microsoft Corporation", "base": 418.20, "currency": "USD", "ytd": "+11.80%", "opinions": 45, "m1": 28.1, "m2": -5.1, "m3": 52.4},
@@ -66,18 +66,16 @@ TICKER_DETAILS = {
     "005930.KS": {"en": "Samsung Electronics Co., Ltd.", "orig": "삼성전자주식회사", "base": 57800.0, "currency": "KRW", "ytd": "-14.30%", "opinions": 35, "m1": 11.0, "m2": -21.4, "m3": 22.5}
 }
 
-# 3. Clean Dropdown Implementation
-ticker_keys = list(TICKER_DETAILS.keys())
-display_options = [f"{k} | {TICKER_DETAILS[k]['en']}" for k in ticker_keys]
+# 3. Clean Key Selector Control Loop
+ticker_options_list = list(TICKER_DETAILS.keys())
 
-selected_option = st.selectbox(
-    "Select Target Asset Portfolio:",
-    options=display_options,
+selected_ticker = st.selectbox(
+    "Select Target Asset Portfolio Ticker:",
+    options=ticker_options_list,
     index=0
 )
 
-# 4. Correct String Extraction Layer
-selected_ticker = selected_option.split(" | ")[0]
+# 4. Pure Mathematical Metric Pipeline
 static_details = TICKER_DETAILS[selected_ticker]
 
 live_price = float(static_details["base"])
@@ -93,6 +91,4 @@ pct_mean = ((mean_t / live_price) - 1.0) * 100.0
 pct_high = ((high_t / live_price) - 1.0) * 100.0
 pct_low = ((low_t / live_price) - 1.0) * 100.0
 
-# 5. Scorecard Table Data List
-scorecard_list = [
-
+# 5. Safe Multi-Row Grid Arrays
