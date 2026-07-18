@@ -66,31 +66,30 @@ TICKER_DETAILS = {
     "005930.KS": {"en": "Samsung Electronics Co., Ltd.", "orig": "Samsung Electronics Co., Ltd.", "base": 57800.0, "currency": "KRW", "ytd": "-14.30%", "opinions": 35, "m1": 11.0, "m2": -21.4, "m3": 22.5}
 }
 
-# 3. Native Key Selector Options Array
-ticker_keys = list(TICKER_DETAILS.keys())
+# 3. Dynamic Selection Control Layer
+ticker_options_list = sorted(list(TICKER_DETAILS.keys()))
 
 selected_ticker = st.selectbox(
     "Select Target Asset Portfolio Ticker:",
-    options=ticker_keys,
+    options=ticker_options_list,
     index=0
 )
 
-# 4. Pure Metric Pipeline Processing
-static_details = TICKER_DETAILS[selected_ticker]
+# 4. Defensive Target Verification Layer
+if selected_ticker and selected_ticker in TICKER_DETAILS:
+    static_details = TICKER_DETAILS[selected_ticker]
 
-live_price = float(static_details["base"])
-asset_currency = str(static_details["currency"])
-opinions = int(static_details["opinions"])
-live_ytd = str(static_details["ytd"])
+    live_price = float(static_details["base"])
+    asset_currency = str(static_details["currency"])
+    opinions = int(static_details["opinions"])
+    live_ytd = str(static_details["ytd"])
 
-mean_t = live_price * 1.12
-high_t = live_price * 1.28
-low_t = live_price * 0.86
+    mean_t = live_price * 1.12
+    high_t = live_price * 1.28
+    low_t = live_price * 0.86
 
-pct_mean = ((mean_t / live_price) - 1.0) * 100.0
-pct_high = ((high_t / live_price) - 1.0) * 100.0
-pct_low = ((low_t / live_price) - 1.0) * 100.0
-
-# 5. Safe Modular Construction Blocks
+    pct_mean = ((mean_t / live_price) - 1.0) * 100.0
+    pct_high = ((high_t / live_price) - 1.0) * 100.0
+    pct_low = ((low_t / live_price) - 1.0) * 100.0
 
 
