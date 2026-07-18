@@ -66,7 +66,7 @@ TICKER_DETAILS = {
     "005930.KS": {"en": "Samsung Electronics Co., Ltd.", "orig": "삼성전자주식회사", "base": 57800.0, "currency": "KRW", "ytd": "-14.30%", "opinions": 35, "m1": 11.0, "m2": -21.4, "m3": 22.5}
 }
 
-# 3. Dynamic Selector Setup
+# 3. Clean Dropdown Implementation
 ticker_keys = list(TICKER_DETAILS.keys())
 display_options = [f"{k} | {TICKER_DETAILS[k]['en']}" for k in ticker_keys]
 
@@ -93,6 +93,6 @@ pct_mean = ((mean_t / live_price) - 1.0) * 100.0
 pct_high = ((high_t / live_price) - 1.0) * 100.0
 pct_low = ((low_t / live_price) - 1.0) * 100.0
 
-# 5. Compiled Core Matrix Layout
+# 5. Scorecard Table Data List
 scorecard_list = [
 
