@@ -85,7 +85,7 @@ CATEGORIZED_TICKERS = {
     "🇰🇷 Korea Semiconductor Leaders": ["000660.KS", "005930.KS"]
 }
 
-# Building dropdown selections mapping cleanly to corporate identifiers
+# Dropdown options mapping
 dropdown_options = []
 label_to_ticker = {}
 
@@ -124,7 +124,7 @@ def compile_all_sources(ticker_symbol):
         try:
             expirations = t.options
             if expirations:
-                opt_chain = t.option_chain(expirations)
+                opt_chain = t.option_chain(expirations[0])
                 calls_vol = opt_chain.calls['volume'].sum()
                 puts_vol = opt_chain.puts['volume'].sum()
                 ratio = calls_vol / puts_vol if puts_vol > 0 else 1.0
@@ -158,8 +158,10 @@ def compile_all_sources(ticker_symbol):
                 headlines = [n.get('title', '') for n in news]
                 bull_words = ['buy', 'growth', 'surge', 'beat', 'upgrade', 'higher', 'positive']
                 bear_words = ['sell', 'drop', 'risk', 'miss', 'downgrade', 'lower', 'negative']
-                
                 text_blob = " ".join(headlines).lower()
                 b_score = sum(text_blob.count(w) for w in bull_words)
                 r_score = sum(text_blob.count(w) for w in bear_words)
                 if b_score > r_score:
+                    media_signal = f"Positive Sentiment (Score: +{b_score - r_score})"
+                elif r_score > b_score:
+
