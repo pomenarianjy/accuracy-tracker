@@ -12,12 +12,11 @@ st.set_page_config(
 )
 
 # 2. Executive Consumer Header
-st.title("🎯 The Predictors Scorecard")
-st.markdown("### Public Investment Views Tracking of Semicon Stocks, by A Single Family Office")
+st.title("🎯 The Multi-Source Predictor Scorecard")
+st.markdown("### Cross-Asset Consensus, Insider Tracking, and Global Performance Auditing Engine")
 st.divider()
 
 # 3. Explicitly Categorised Stocks Structure with Full Names
-# Mapping Yahoo Finance tickers to full descriptive names (English + Original Language)
 TICKER_DETAILS = {
     # Magnificent 7
     "AAPL": {"en": "Apple Inc.", "orig": "Apple Inc.", "symbol": "AAPL"},
@@ -125,7 +124,7 @@ def compile_all_sources(ticker_symbol):
         try:
             expirations = t.options
             if expirations:
-                opt_chain = t.option_chain(expirations)
+                opt_chain = t.option_chain(expirations[0])
                 calls_vol = opt_chain.calls['volume'].sum()
                 puts_vol = opt_chain.puts['volume'].sum()
                 ratio = calls_vol / puts_vol if puts_vol > 0 else 1.0
@@ -163,4 +162,5 @@ def compile_all_sources(ticker_symbol):
                 text_blob = " ".join(headlines).lower()
                 b_score = sum(text_blob.count(w) for w in bull_words)
                 r_score = sum(text_blob.count(w) for w in bear_words)
+                if b_score > r_score:
 
