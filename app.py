@@ -102,7 +102,7 @@ categories = {
     "Hong Kong Stock Exchange": ["0981.HK", "1347.HK", "1385.HK", "2577.HK", "6082.HK", "9903.HK"]
 }
 
-# Generate structured string keys mapped to readable choices
+# Generate flat drop-down elements lists
 dropdown_options = []
 for cat_title, ticker_list in categories.items():
     dropdown_options.append(f"--- {cat_title} ---")
@@ -141,4 +141,3 @@ else:
     row3 = {"Core Forecast Tier": "Institutional Peak Target", "Research House / KOL Source Name": "JPMorgan Chase Tactical Growth Horizon", "Target Price": f"{(price * 1.28):,.2f} {currency}", "Implied Deviation": "+28.00%"}
     row4 = {"Core Forecast Tier": "Institutional Peak Target", "Research House / KOL Source Name": "Bank of America Merrill Lynch Alpha Edge", "Target Price": f"{(price * 1.31):,.2f} {currency}", "Implied Deviation": "+31.00%"}
     row5 = {"Core Forecast Tier": "Institutional Floor Target", "Research House / KOL Source Name": "Citi Investment Advisory Risk Managed Floor", "Target Price": f"{(price * 0.86):,.2f} {currency}", "Implied Deviation": "-14.00%"}
-
