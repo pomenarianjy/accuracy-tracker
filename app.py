@@ -3,7 +3,7 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 
-# 1. Page Configuration
+# 1. Clean Native Page Configuration
 st.set_page_config(
     page_title="The Predictor Scorecard | Multi-Source Hub",
     page_icon="🎯",
@@ -11,22 +11,37 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 2. Executive Header
+# 2. Executive Consumer Header
 st.title("🎯 The Multi-Source Predictor Scorecard")
 st.markdown("### Cross-Asset Consensus, Insider Tracking, and Derivative Market Auditing Engine")
 st.divider()
 
-# 3. Universal Ticker List
-TICKER_DIRECTORY = [
-    "SOXX", "NVDA", "AVGO", "AMD", "QCOM", "TXN", "MU", "AMAT", "LRCX", "ADI", 
-    "KLAC", "MRVL", "NXPI", "MCHP", "MPWR", "ON", "SWKS", "QRVO", "CRUS", "TER", 
-    "AMKR", "AAPL", "MSFT", "GOOGL", "AMZN", "META", "TSLA", "INTC", "TSM", "ASML"
-]
+# 3. Explicitly Categorised Stocks Structure
+# Groups are ordered: Mag 7 -> Top SOXX Holdings & SOXX -> Japan Semi -> Taiwan Semi -> Korea Semi
+CATEGORIZED_TICKERS = {
+    "🌟 Magnificent 7": ["AAPL", "MSFT", "GOOGL", "AMZN", "META", "TSLA", "NVDA"],
+    "🔌 SOXX ETF & Top Semiconductor Holdings": ["SOXX", "AVGO", "AMD", "QCOM", "TXN", "MU", "AMAT", "LRCX", "ADI", "KLAC", "MRVL", "NXPI", "MCHP", "MPWR", "ON", "SWKS", "QRVO", "CRUS", "TER", "AMKR", "INTC"],
+    "🇯🇵 Japan Semiconductor Leaders": ["8035.JP", "KIOXIA"],
+    "🇹🇼 Taiwan Semiconductor Leaders": ["TSM", "2454.TW"],
+    "🇰🇷 Korea Semiconductor Leaders": ["000660.KS", "005930.KS"]
+}
 
-user_stock = st.selectbox(
+# Flatten the categories into a sequential display list with structural headers for the selectbox layout
+dropdown_options = []
+ticker_to_clean = {}
+
+for category, tickers in CATEGORIZED_TICKERS.items():
+    dropdown_options.append(f"--- {category} ---")  # Category Label Anchor
+    for ticker in sorted(tickers):
+        display_label = f"   {ticker}"
+        dropdown_options.append(display_label)
+        ticker_to_clean[display_label] = ticker
+
+# Render the categorized dropdown panel
+selected_display = st.selectbox(
     "Select an Asset Code to compile all multi-source records:",
-    options=sorted(TICKER_DIRECTORY),
-    index=sorted(TICKER_DIRECTORY).index("META") if "META" in TICKER_DIRECTORY else 0
+    options=dropdown_options,
+    index=dropdown_options.index("   META") if "   META" in dropdown_options else 1
 )
 
 # 4. Multi-Source Pipeline
@@ -46,7 +61,6 @@ def compile_all_sources(ticker_symbol):
         num_opinions = info.get('numberOfAnalystOpinions', 0)
         
         # --- SOURCE GROUP B: OPTIONS MARKET BIAS ---
-        # Fetching call/put options split to find derivative market consensus
         try:
             expirations = t.options
             if expirations:
@@ -58,10 +72,9 @@ def compile_all_sources(ticker_symbol):
             else:
                 opt_signal = "Neutral (No active near-term options chain)"
         except Exception:
-            opt_signal = "Unavailable (Options pipeline timeout)"
+            opt_signal = "Neutral/Unavailable for regional ticker layout"
 
         # --- SOURCE GROUP C: CORPORATE INSIDER SIGNALS ---
-        # Parsing whether internal executives are buying or dumping stock
         try:
             insiders = t.insider_transactions
             if insiders is not None and not insiders.empty:
@@ -76,10 +89,9 @@ def compile_all_sources(ticker_symbol):
             else:
                 insider_signal = "Neutral (No recent executive transactions filed)"
         except Exception:
-            insider_signal = "Unavailable (SEC filing stream delayed)"
+            insider_signal = "Neutral/Unavailable for regional ticker layout"
 
         # --- SOURCE GROUP D: MEDIA HEADLINE SENTIMENT ALGO ---
-        # Scanning the latest text news stream
         try:
             news = t.news
             if news:
@@ -113,43 +125,30 @@ def compile_all_sources(ticker_symbol):
         ]
         df_scorecard = pd.DataFrame(scorecard_rows, columns=["Data Source Feed", "Forecast Target/Value", "Implied Return / Signal Status", "Source Context & Methodology"])
 
-        # --- SOURCE GROUP E: FIRM-BY-FIRM DIRECT HISTORICAL RECORDS ---
-        # Pulling raw bank upgrades/downgrades log history directly
-        try:
-            raw_firms = t.upgrades_downgrades
-            if raw_firms is not None and not raw_firms.empty:
-                # Format index timestamp cleanly to string text
-                raw_firms = raw_firms.reset_index()
-                raw_firms['Grade Date'] = raw_firms['Grade Date'].dt.strftime('%Y-%m-%d')
-                df_firms = raw_firms[['Grade Date', 'Firm', 'From Grade', 'To Grade', 'Action']].head(15)
-            else:
-                df_firms = pd.DataFrame(columns=['Notice', 'Status'], data=[["No granular institutional logs parsed for this equity ticker.", "N/A"]])
-        except Exception:
-            df_firms = pd.DataFrame(columns=['Notice', 'Status'], data=[["Granular bank action streams temporarily offline.", "N/A"]])
-
-        return df_scorecard, df_firms, company_name, current_price
+        return df_scorecard, company_name, current_price
 
     except Exception:
-        return None, None, ticker_symbol, 0.0
+        return None, ticker_symbol, 0.0
 
-with st.spinner(f"Aggregating 7 automated market feeds for {user_stock}..."):
-    df_core, df_bank_history, asset_name, live_price = compile_all_sources(user_stock)
-
-# 5. UI Layout Display
-if df_core is not None:
-    st.markdown(f"#### Audited Intelligence Profile: **{user_stock} ({asset_name})**")
-    st.metric("Live Execution Market Price", f"${live_price:,.2f}")
-    st.write("")
-    
-    # Render Master Core Scorecard Table
-    st.markdown("##### 📁 Combined High-Quality Scorecard Data Rows")
-    st.dataframe(df_core, use_container_width=True, hide_index=True)
-    
-    # Render Granular Bank History Table
-    st.divider()
-    st.markdown("##### 🏛️ Granular Firm-By-Firm Institutional Action History (Source 7)")
-    st.caption("Auditing the individual upgrade/downgrade calls made by individual banking desks.")
-    st.dataframe(df_bank_history, use_container_width=True, hide_index=True)
+# 5. Execution & Filtering Guard
+# Check if the user selected a category visual anchor line instead of a real ticker code string
+if selected_display.startswith("---"):
+    st.info("💡 Please expand the dropdown and select a specific stock ticker code below the category title headers.")
 else:
-    st.error(f"Global server parsing timeout for ticker: {user_stock}. Please select an alternate asset code node.")
+    actual_ticker = ticker_to_clean.get(selected_display)
+    
+    with st.spinner(f"Aggregating multi-source market feeds for {actual_ticker}..."):
+        df_core, asset_name, live_price = compile_all_sources(actual_ticker)
+
+    # UI Layout Display
+    if df_core is not None:
+        st.markdown(f"#### Audited Intelligence Profile: **{actual_ticker} ({asset_name})**")
+        st.metric("Live Execution Market Price", f"${live_price:,.2f}")
+        st.write("")
+        
+        # Render Master Core Scorecard Table
+        st.markdown("##### 📁 Combined High-Quality Scorecard Data Rows")
+        st.dataframe(df_core, use_container_width=True, hide_index=True)
+    else:
+        st.error(f"Global server parsing timeout for ticker: {actual_ticker}. Please select an alternate asset code node.")
 
