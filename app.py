@@ -47,7 +47,7 @@ if 'prediction_db' not in st.session_state:
         ['ON', 'ON Semiconductor', 'Gary Patton (Tech Strategy)', 'Independent Analyst', 60, 'Silicon carbide power module infrastructure contracts anchoring medium-term absolute volume paths', 'Live Window'],
         ['SWKS', 'Skyworks Solutions', 'Edward Snyder (Charter Equity)', 'Boutique Tech Advisory', 52, 'Radiofrequency front-end configurations tracking traditional premium consumer product launch frames', 'Missed Target'],
         ['QRVO', 'Qorvo Inc.', 'Toshiya Hari (Goldman Sachs)', 'Goldman Sachs Research', 70, 'Connectivity element matrix upgrades diversifying structural revenue streams beyond low-tier handset constraints', 'Missed Window'],
-        ['CRUS', 'Cirrus Logic', 'Christopher Rolland (Susquehanna)', 'Susquehanna Financial', 65, 'Audio and mixed-signal processing module supply chains maintaining dominant allocation parameters', 'Verified Metric'],
+        ['CRUS', 'Cirrus Logic', 'Christopher Rolland (Susquehanna)', 'Susquehanna Financial', 65, 'Audio and mixed-signal module allocations maintaining clear concentration leads within core consumer groups', 'Verified Metric'],
         ['TER', 'Teradyne Inc.', 'Mehdi Hosseini (Susquehanna)', 'Susquehanna Financial', 58, 'Automated industrial robotics test system integrations logging continuous baseline unit demand turns', 'Live Window'],
         ['INTC', 'Intel Corporation', 'Pat Gelsinger (CEO Insights)', 'Corporate Guidance', 45, 'External packaging and system foundry customer contract backlog verification marks long-term floor', 'Structural Drift'],
 
