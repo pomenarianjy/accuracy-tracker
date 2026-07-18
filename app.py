@@ -85,12 +85,12 @@ CATEGORIZED_TICKERS = {
     "🇰🇷 Korea Semiconductor Leaders": ["000660.KS", "005930.KS"]
 }
 
-# 4. Independent Global Helper Functions (Decoupled to guarantee zero compilation errors)
+# 4. Independent Global Helper Functions 
 def get_options_signal(ticker_obj):
     try:
         expirations = ticker_obj.options
         if expirations:
-            opt_chain = ticker_obj.option_chain(expirations[0])
+            opt_chain = ticker_obj.option_chain(expirations)
             calls_vol = opt_chain.calls['volume'].sum()
             puts_vol = opt_chain.puts['volume'].sum()
             ratio = calls_vol / puts_vol if puts_vol > 0 else 1.0
@@ -172,5 +172,4 @@ def compile_all_sources(ticker_symbol):
 
         scorecard_rows = [
             ["1. Wall Street Consensus (Mean Target)", f"{mean_t:,.2f} {currency}", f"{((mean_t/current_price)-1)*100:+.2f}%", f"Aggregated baseline target from {num_opinions} registered research institutions."],
-
 
