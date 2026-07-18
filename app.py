@@ -9,7 +9,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 2. Hardcoded Solid Database Matrix (Zero session state bugs)
+# 2. Hardcoded Solid Database Matrix (Completely standalone and stable layout)
 columns_list = ['Stock Code', 'Asset Description', 'Predictor Name', 'Platform Tier', 'Historic Accuracy (%)', 'Specific Prediction', 'Status']
 
 rows_data = [
@@ -45,8 +45,8 @@ rows_data = [
     ['MPWR', 'Monolithic Power Systems', 'Quinn Bolton (Needham)', 'Needham & Co.', 73, 'High-performance computing high-voltage distribution designs capturing dominant chip tier margins', 'Met Target'],
     ['ON', 'ON Semiconductor', 'Gary Patton (Tech Strategy)', 'Independent Analyst', 60, 'Silicon carbide power module infrastructure contracts anchoring medium-term absolute volume paths', 'Live Window'],
     ['SWKS', 'Skyworks Solutions', 'Edward Snyder (Charter Equity)', 'Boutique Tech Advisory', 52, 'Radiofrequency front-end configurations tracking traditional premium consumer product launch frames', 'Missed Target'],
-    ['QRVO', 'Qorvo Inc.', 'Toshiya Hari (Goldman Sachs)', 'Goldman Sachs Research', 70, 'Connectivity element matrix upgrades diversifying structural revenue streams beyond low-tier handset constraints', 'Missed Window'],
-    ['CRUS', 'Circrus Logic', 'Christopher Rolland (Susquehanna)', 'Susquehanna Financial', 65, 'Audio and mixed-signal module allocations maintaining clear concentration leads within core consumer groups', 'Verified Metric'],
+    ['QRVO', 'Qorvo Inc.', 'Toshiya Hari (Goldman Sachs)', 'Goldman Sachs Research', 70, 'Connectivity element matrix updates diversifying structural revenue streams beyond low-tier handset constraints', 'Missed Window'],
+    ['CRUS', 'Cirrus Logic', 'Christopher Rolland (Susquehanna)', 'Susquehanna Financial', 65, 'Audio and mixed-signal module allocations maintaining clear concentration leads within core consumer groups', 'Verified Metric'],
     ['TER', 'Teradyne Inc.', 'Mehdi Hosseini (Susquehanna)', 'Susquehanna Financial', 58, 'Automated industrial robotics test system integrations logging continuous baseline unit demand turns', 'Live Window'],
     ['INTC', 'Intel Corporation', 'Pat Gelsinger (CEO Insights)', 'Corporate Guidance', 45, 'External packaging and system foundry customer contract backlog verification marks long-term floor', 'Structural Drift'],
 
@@ -65,10 +65,10 @@ rows_data = [
     ['KIOXIA', 'Kioxia Holdings (Japan)', 'Hideki Yasuda (Toyo Securities)', 'Independent Analyst', 63, 'NAND bit volume shipments recovering as data center flash array migrations pick up velocity', 'Live Window']
 ]
 
-# Create standard, un-cached dataframe immediately on line loading
+# Create global master dataframe matrix
 master_db = pd.DataFrame(rows_data, columns=columns_list)
 
-# 3. Clean and Deduplicate Ticker List
+# 3. Process Available Tickers List Dynamically
 AVAILABLE_TICKERS = sorted(list(master_db['Stock Code'].unique()))
 
 # 4. Clean Consumer Header
@@ -83,11 +83,9 @@ user_stock = st.selectbox(
     index=AVAILABLE_TICKERS.index('SOXX') if 'SOXX' in AVAILABLE_TICKERS else 0
 )
 
-# 6. Filter Data and Isolate Rows
-filtered_df = master_db[master_db['Stock Code'] == user_stock]
-
-# Clean Name Lookup to ensure no raw bracket string artifacts or data arrays display
-asset_descriptions = filtered_df['Asset Description'].tolist()
-clean_asset_name = asset_descriptions[0] if asset_descriptions else "Unknown Asset"
-
+# FIXED: Hardcoded dictionary completely prevents pandas array errors
+ticker_map = {
+    'SOXX': 'iShares Semiconductor ETF', 'NVDA': 'NVIDIA Corporation', 'AMD': 'Advanced Micro Devices',
+    'AAPL': 'Apple Inc.', 'MSFT': 'Microsoft Corporation', 'GOOGL': 'Alphabet Inc.', 
+    'AMZN': 'Amazon.com Inc.', 'META': 'Meta Platforms Inc.', 'TSLA': 'Tesla Inc.',
 
