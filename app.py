@@ -12,8 +12,8 @@ st.set_page_config(
 )
 
 # 2. Executive Consumer Header
-st.title("🎯 The Multi-Source Predictor Scorecard")
-st.markdown("### Cross-Asset Consensus, Insider Tracking, and Derivative Market Auditing Engine")
+st.title("🎯 The Predictors Scorecard")
+st.markdown("### Public Investment Views Tracking of Semicon Stocks, by A Single Family Office")
 st.divider()
 
 # 3. Explicitly Categorised Stocks Structure
