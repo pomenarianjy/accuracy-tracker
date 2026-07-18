@@ -11,7 +11,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 2. Updated Executive Title (Customised Family Office Wording)
+# 2. Executive Title (Customised Family Office Branding)
 st.title("🎯 The Predictors Scorecard")
 st.markdown("### Investment Views Accuracy Tracking, by A Single Family Office")
 st.divider()
@@ -90,7 +90,7 @@ def get_options_signal(ticker_obj):
     try:
         expirations = ticker_obj.options
         if expirations:
-            opt_chain = ticker_obj.option_chain(expirations[0])
+            opt_chain = ticker_obj.option_chain(expirations)
             calls_vol = opt_chain.calls['volume'].sum()
             puts_vol = opt_chain.puts['volume'].sum()
             ratio = calls_vol / puts_vol if puts_vol > 0 else 1.0
