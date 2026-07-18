@@ -2,9 +2,7 @@ import streamlit as st
 import pandas as pd
 import datetime
 
-# ==========================================
-# 1. APPLICATION & NATIVE STREAMLIT CONFIGURATION
-# ==========================================
+# 1. Native Layout Config
 st.set_page_config(
     page_title="The Predictors Scorecard",
     page_icon="🎯",
@@ -16,9 +14,7 @@ st.title("🎯 The Predictors Scorecard")
 st.markdown("### Investment Views Accuracy Tracking, by A Single Family Office")
 st.divider()
 
-# ==========================================
-# 2. BILINGUAL MULTI-REGION ASSET DIRECTORY
-# ==========================================
+# 2. Asset Matrix Directory
 TICKER_DETAILS = {
     "AAPL": {"en": "Apple Inc.", "orig": "Apple Inc.", "base": 224.50, "currency": "USD", "ytd": "+14.25%", "opinions": 38, "m1": 25.4, "m2": -8.3, "m3": 48.2},
     "MSFT": {"en": "Microsoft Corporation", "orig": "Microsoft Corporation", "base": 418.20, "currency": "USD", "ytd": "+11.80%", "opinions": 45, "m1": 28.1, "m2": -5.1, "m3": 52.4},
@@ -78,5 +74,12 @@ CATEGORIZED_TICKERS = {
     "🇰🇷 Korea Semiconductor": ["000660.KS", "005930.KS"]
 }
 
-# ==========================================
+# 3. Double-Layer Layout Selection Dropdown
+dropdown_options = []
+label_to_ticker = {}
+
+for category, tickers_list in CATEGORIZED_TICKERS.items():
+    dropdown_options.append(f"--- {category} ---")
+    for ticker_item in tickers_list:
+
 
