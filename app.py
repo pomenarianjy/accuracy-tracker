@@ -116,7 +116,6 @@ else:
         live_price = base_price
         opinions = 42
         
-        # Safe live fetch
         try:
             t = yf.Ticker(actual_ticker)
             hist_recent = t.history(period="5d")
