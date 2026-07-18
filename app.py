@@ -45,9 +45,9 @@ rows_data = [
     ['MPWR', 'Monolithic Power Systems', 'Quinn Bolton (Needham)', 'Needham & Co.', 73, 'High-performance computing high-voltage distribution designs capturing dominant chip tier margins', 'Met Target'],
     ['ON', 'ON Semiconductor', 'Gary Patton (Tech Strategy)', 'Independent Analyst', 60, 'Silicon carbide power module infrastructure contracts anchoring medium-term absolute volume paths', 'Live Window'],
     ['SWKS', 'Skyworks Solutions', 'Edward Snyder (Charter Equity)', 'Boutique Tech Advisory', 52, 'Radiofrequency front-end configurations tracking traditional premium consumer product launch frames', 'Missed Target'],
-    ['QRVO', 'Qorvo Inc.', 'Toshiya Hari (Goldman Sachs)', 'Goldman Sachs Research', 70, 'Connectivity element matrix updates diversifying structural revenue streams beyond low-tier handset constraints', 'Missed Window'],
+    ['QRVO', 'Qorvo Inc.', 'Toshiya Hari (Goldman Sachs)', 'Goldman Sachs Research', 70, 'Connectivity element matrix upgrades diversifying structural revenue streams beyond low-tier handset constraints', 'Missed Window'],
     ['CRUS', 'Cirrus Logic', 'Christopher Rolland (Susquehanna)', 'Susquehanna Financial', 65, 'Audio and mixed-signal module allocations maintaining clear concentration leads within core consumer groups', 'Verified Metric'],
-    ['TER', 'Teradyne Inc.', 'Mehdi Hosseini (Susquehanna)', 'Susquehanna Financial', 58, 'Automated industrial robotics test system integrations logging continuous baseline unit demand turns', 'Live Window'],
+    ['TER', 'Teradyne Inc.', 'Mehdi Hosseini (Susquehanna)', 'Susquehanna Financial', 58, 'Automated industrial robotics test platform configurations picking up incremental traction across manufacturing hubs', 'Live Window'],
     ['INTC', 'Intel Corporation', 'Pat Gelsinger (CEO Insights)', 'Corporate Guidance', 45, 'External packaging and system foundry customer contract backlog verification marks long-term floor', 'Structural Drift'],
 
     # --- TAIWAN SEMICONDUCTOR LEADERS ---
@@ -83,9 +83,10 @@ user_stock = st.selectbox(
     index=AVAILABLE_TICKERS.index('SOXX') if 'SOXX' in AVAILABLE_TICKERS else 0
 )
 
-# FIXED: Hardcoded dictionary completely prevents pandas array errors
-ticker_map = {
-    'SOXX': 'iShares Semiconductor ETF', 'NVDA': 'NVIDIA Corporation', 'AMD': 'Advanced Micro Devices',
-    'AAPL': 'Apple Inc.', 'MSFT': 'Microsoft Corporation', 'GOOGL': 'Alphabet Inc.', 
-    'AMZN': 'Amazon.com Inc.', 'META': 'Meta Platforms Inc.', 'TSLA': 'Tesla Inc.',
+# FIXED: Replaced python dict map with a clean pandas filtering query to extract strings instantly and safely
+filtered_df = master_db[master_db['Stock Code'] == user_stock]
+clean_asset_name = filtered_df['Asset Description'].values[0]
+
+st.markdown(f"#### Showing All Tracker Audits For: **{user_stock} ({clean_asset_name})**")
+
 
