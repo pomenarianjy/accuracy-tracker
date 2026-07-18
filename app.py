@@ -85,31 +85,31 @@ CATEGORIZED_TICKERS = {
     "🇰🇷 Korea Semiconductor Leaders": ["000660.KS", "005930.KS"]
 }
 
-# 4. Global Sentiment Math Helper Functions
+# 4. Independent Global Helper Functions 
 def get_options_signal(ticker_obj):
     try:
         expirations = ticker_obj.options
         if expirations:
-            chain = ticker_obj.option_chain(expirations[0])
-            c_vol = float(chain.calls['volume'].sum())
-            p_vol = float(chain.puts['volume'].sum())
-            ratio = c_vol / p_vol if p_vol > 0 else 1.0
-            return f"Bullish (Ratio: {ratio:.2f}x)" if ratio > 1.1 else f"Bearish/Neutral (Ratio: {ratio:.2f}x)"
+            opt_chain = ticker_obj.option_chain(expirations[0])
+            calls_vol = opt_chain.calls['volume'].sum()
+            puts_vol = opt_chain.puts['volume'].sum()
+            ratio = calls_vol / puts_vol if puts_vol > 0 else 1.0
+            return f"Bullish (Ratio: {ratio:.2f}x)" if ratio > 1.2 else f"Bearish/Neutral (Ratio: {ratio:.2f}x)"
     except:
         pass
-    return "Neutral / Data Stream N/A"
+    return "Neutral / Data Stream Delayed"
 
 def get_insider_signal(ticker_obj):
     try:
         insiders = ticker_obj.insider_transactions
         if insiders is not None and not insiders.empty:
-            text_series = insiders['Text'].astype(str).str.lower()
-            buys = int(text_series.str.contains('purchase').sum())
-            sells = int(text_series.str.contains('sale').sum())
-            if buys > sells:
-                return f"Net Buying Accumulation (+{buys} trades logged)"
-            if sells > buys:
-                return f"Net Selling Liquidation (-{sells} trades logged)"
+            text_col = insiders['Text'].astype(str).str.lower()
+            buy_count = sum(text_col.str.contains('purchase'))
+            sell_count = sum(text_col.str.contains('sale'))
+            if buy_count > sell_count:
+                return f"Net Buying Accumulation (+{buy_count} trades logged)"
+            if sell_count > buy_count:
+                return f"Net Selling Liquidation (-{sell_count} trades logged)"
     except:
         pass
     return "Neutral (No recent executive transactions filed)"
@@ -118,10 +118,12 @@ def get_media_signal(ticker_obj):
     try:
         news = ticker_obj.news
         if news:
-            headlines = [str(n.get('title', '')) for n in news]
-            blob = " ".join(headlines).lower()
-            b_score = sum(blob.count(w) for w in ['buy', 'growth', 'surge', 'beat', 'upgrade', 'positive'])
-            r_score = sum(blob.count(w) for w in ['sell', 'drop', 'risk', 'miss', 'downgrade', 'negative'])
+            headlines = [n.get('title', '') for n in news]
+            bull_words = ['buy', 'growth', 'surge', 'beat', 'upgrade', 'higher', 'positive']
+            bear_words = ['sell', 'drop', 'risk', 'miss', 'downgrade', 'lower', 'negative']
+            text_blob = " ".join(headlines).lower()
+            b_score = sum(text_blob.count(w) for w in bull_words)
+            r_score = sum(text_blob.count(w) for w in bear_words)
             if b_score > r_score:
                 return f"Positive Sentiment (Score: +{b_score - r_score})"
             if r_score > b_score:
