@@ -84,7 +84,7 @@ with col_main:
         asset_name = filtered_df['Asset Description'].values[0]
         st.markdown(f"##### Showing Audits For: **{user_stock} ({asset_name})**")
         
-        # Display clean, straightforward native dataframe (Eliminates hidden bracket syntax errors)
+        # Display clean, straightforward native dataframe
         st.dataframe(
             filtered_df[['Predictor Name', 'Platform Tier', 'Historic Accuracy (%)', 'Specific Prediction', 'Status']],
             use_container_width=True,
@@ -97,8 +97,7 @@ with col_side:
     with st.container(border=True):
         st.markdown("##### 📁 Verification Feeds")
         st.caption("🔒 **Primary Hardware Logs Verified**")
-        st.caption("Cross-checked via foundry shipment sheets, SEC 13F logs, financial terminals (Bloomberg, Reuters), and public timeline signatures.")
+        st.caption("Cross-checked via foundry shipment sheets, SEC 13F logs, financial terminals, and public signatures.")
     
     st.markdown("##### 📥 Log an Audited Claim Entry")
     with st.form("new_prediction_form", clear_on_submit=True):
-
