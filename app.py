@@ -3,7 +3,7 @@ import yfinance as yf
 import pandas as pd
 import datetime
 
-# 1. Page Configuration
+# 1. Clean Native Page Configuration
 st.set_page_config(
     page_title="The Predictor Scorecard | Global Semi Hub",
     page_icon="🎯",
@@ -52,7 +52,7 @@ TICKER_DETAILS = {
     
     # Japan Semiconductor Leaders
     "8035.T": {"en": "Tokyo Electron Limited", "orig": "東京エレクトロン株式会社 (TYO: 8035)", "symbol": "8035.T"},
-    "6857.T": {"en": "Advantest Corporation", "orig": "株式会社アドバンテスト (TYO: 6857)", "symbol": "6857.T"},
+    "6857.T": {"en": "Advantest Corporation", "orig": "株式会社アド반테스트 (TYO: 6857)", "symbol": "6857.T"},
     "6146.T": {"en": "Disco Corporation", "orig": "株式会社ディスコ (TYO: 6146)", "symbol": "6146.T"},
     "6920.T": {"en": "Lasertec Corporation", "orig": "レーザーテック株式会社 (TYO: 6920)", "symbol": "6920.T"},
     "7735.T": {"en": "SCREEN Holdings Co., Ltd.", "orig": "SCREENホールディングス (TYO: 7735)", "symbol": "7735.T"},
@@ -85,7 +85,7 @@ CATEGORIZED_TICKERS = {
     "🇰🇷 Korea Semiconductor Leaders": ["000660.KS", "005930.KS"]
 }
 
-# Dropdown options mapping
+# Building dropdown selections
 dropdown_options = []
 label_to_ticker = {}
 
@@ -124,7 +124,7 @@ def compile_all_sources(ticker_symbol):
         try:
             expirations = t.options
             if expirations:
-                opt_chain = t.option_chain(expirations[0])
+                opt_chain = t.option_chain(expirations)
                 calls_vol = opt_chain.calls['volume'].sum()
                 puts_vol = opt_chain.puts['volume'].sum()
                 ratio = calls_vol / puts_vol if puts_vol > 0 else 1.0
@@ -161,7 +161,8 @@ def compile_all_sources(ticker_symbol):
                 text_blob = " ".join(headlines).lower()
                 b_score = sum(text_blob.count(w) for w in bull_words)
                 r_score = sum(text_blob.count(w) for w in bear_words)
+                
                 if b_score > r_score:
                     media_signal = f"Positive Sentiment (Score: +{b_score - r_score})"
-                elif r_score > b_score:
+
 
