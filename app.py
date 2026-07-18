@@ -58,7 +58,7 @@ TICKER_DETAILS = {
     "7735.T": {"en": "SCREEN Holdings Co., Ltd.", "orig": "SCREENホールディングス (TYO: 7735)", "symbol": "7735.T"},
     "6525.T": {"en": "Kokusai Electric Corporation", "orig": "株式会社KOKUSAI ELECTRIC (TYO: 6525)", "symbol": "6525.T"},
     "285A.T": {"en": "Kioxia Holdings Corporation", "orig": "キオクシアホールディングス株式会社 (TYO: 285A)", "symbol": "285A.T"},
-    "6723.T": {"en": "Renesas Electronics Corporation", "orig": "ルネサスエレクトロニクス株式会社 (TYO: 6723)", "symbol": "6723.T"},
+    "6723.T": {"en": "Renesas Electronics Corporation", "orig": "ル네사스에렉토로닉스 주식회사 (TYO: 6723)", "symbol": "6723.T"},
     "4062.T": {"en": "Ibiden Co., Ltd.", "orig": "イビデン株式会社 (TYO: 4062)", "symbol": "4062.T"},
     "6963.T": {"en": "ROHM Co., Ltd.", "orig": "ローム株式会社 (TYO: 6963)", "symbol": "6963.T"},
     
@@ -90,7 +90,7 @@ def get_options_signal(ticker_obj):
     try:
         expirations = ticker_obj.options
         if expirations:
-            opt_chain = ticker_obj.option_chain(expirations[0])
+            opt_chain = ticker_obj.option_chain(expirations)
             calls_vol = opt_chain.calls['volume'].sum()
             puts_vol = opt_chain.puts['volume'].sum()
             ratio = calls_vol / puts_vol if puts_vol > 0 else 1.0
@@ -132,7 +132,7 @@ def get_media_signal(ticker_obj):
         pass
     return "Neutral Media Coverage Profile"
 
-# 4. Correctly Closed Section 5 Dropdown Layout Mapping
+# 4. Correctly Closed Section Dropdown Layout Mapping
 dropdown_options = []
 label_to_ticker = {}
 
