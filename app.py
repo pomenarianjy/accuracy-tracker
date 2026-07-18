@@ -85,25 +85,7 @@ CATEGORIZED_TICKERS = {
     "🇰🇷 Korea Semiconductor Leaders": ["000660.KS", "005930.KS"]
 }
 
-# Building dropdown selections mapping cleanly to corporate identifiers
-dropdown_options = []
-label_to_ticker = {}
-
-for category, tickers in CATEGORIZED_TICKERS.items():
-    dropdown_options.append(f"--- {category} ---")
-    for ticker in tickers:
-        details = TICKER_DETAILS.get(ticker, {"en": ticker})
-        display_label = f"   {ticker} | {details['en']}"
-        dropdown_options.append(display_label)
-        label_to_ticker[display_label] = ticker
-
-selected_display = st.selectbox(
-    "Select an Asset Code to compile all multi-source records & audited historical yields:",
-    options=dropdown_options,
-    index=dropdown_options.index("   META | Meta Platforms Inc.") if "   META | Meta Platforms Inc." in dropdown_options else 1
-)
-
-# Safe Option Signal Calculation
+# 4. Independent Global Helper Functions (Decoupled to guarantee zero compilation errors)
 def get_options_signal(ticker_obj):
     try:
         expirations = ticker_obj.options
@@ -117,7 +99,6 @@ def get_options_signal(ticker_obj):
         pass
     return "Neutral / Data Stream Delayed"
 
-# Safe Insider Signal Calculation
 def get_insider_signal(ticker_obj):
     try:
         insiders = ticker_obj.insider_transactions
@@ -133,7 +114,6 @@ def get_insider_signal(ticker_obj):
         pass
     return "Neutral (No recent executive transactions filed)"
 
-# Safe Headline Sentiment Calculation
 def get_media_signal(ticker_obj):
     try:
         news = ticker_obj.news
@@ -152,7 +132,25 @@ def get_media_signal(ticker_obj):
         pass
     return "Neutral Media Coverage Profile"
 
-# 4. Multi-Source Pipeline
+# 5. Build Dropdown Layout Map
+dropdown_options = []
+label_to_ticker = {}
+
+for category, tickers in CATEGORIZED_TICKERS.items():
+    dropdown_options.append(f"--- {category} ---")
+    for ticker in tickers:
+        details = TICKER_DETAILS.get(ticker, {"en": ticker})
+        display_label = f"   {ticker} | {details['en']}"
+        dropdown_options.append(display_label)
+        label_to_ticker[display_label] = ticker
+
+selected_display = st.selectbox(
+    "Select an Asset Code to compile all multi-source records & audited historical yields:",
+    options=dropdown_options,
+    index=dropdown_options.index("   META | Meta Platforms Inc.") if "   META | Meta Platforms Inc." in dropdown_options else 1
+)
+
+# 6. Core Multi-Source Pipeline Execution
 @st.cache_data(ttl=1800)
 def compile_all_sources(ticker_symbol):
     try:
@@ -173,6 +171,6 @@ def compile_all_sources(ticker_symbol):
         media_signal = get_media_signal(t)
 
         scorecard_rows = [
-
+            ["1. Wall Street Consensus (Mean Target)", f"{mean_t:,.2f} {currency}", f"{((mean_t/current_price)-1)*100:+.2f}%", f"Aggregated baseline target from {num_opinions} registered research institutions."],
 
 
