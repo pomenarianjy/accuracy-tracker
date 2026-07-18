@@ -80,7 +80,7 @@ with col_main:
     filtered_df = st.session_state.prediction_db[st.session_state.prediction_db['Stock Code'] == user_stock]
     
     if not filtered_df.empty:
-        # FIXED: Using a safe .values[0] lookup method to extract asset description text safely
+        # Pull the asset name text safely from the array
         asset_name = filtered_df['Asset Description'].values[0]
         st.markdown(f"##### Showing Audits For: **{user_stock} ({asset_name})**")
         
@@ -99,4 +99,6 @@ with col_main:
                 ),
                 "Status": st.column_config.SelectboxColumn(
                     "Status",
+                    options=["Met Target", "Verified Metric", "Live Window", "Missed Window", "Structural Drift", "Out of Bounds", "Missed Target"],
+
 
