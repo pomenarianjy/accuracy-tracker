@@ -55,14 +55,14 @@ TICKER_DETAILS = {
     
     # Japan Semiconductor Leaders
     "8035.T": {"en": "Tokyo Electron Limited", "orig": "東京エレクトロン株式会社 (TYO: 8035)"},
-    "6857.T": {"en": "Advantest Corporation", "orig": "株式会社アド班テスト (TYO: 6857)"},
+    "6857.T": {"en": "Advantest Corporation", "orig": "株式会社アドバンテスト (TYO: 6857)"},
     "6146.T": {"en": "Disco Corporation", "orig": "株式会社ディスコ (TYO: 6146)"},
     "6920.T": {"en": "Lasertec Corporation", "orig": "レーザーテック株式会社 (TYO: 6920)"},
     "7735.T": {"en": "SCREEN Holdings Co., Ltd.", "orig": "SCREENホールディングス (TYO: 7735)"},
     "6525.T": {"en": "Kokusai Electric Corporation", "orig": "株式会社KOKUSAI ELECTRIC (TYO: 6525)"},
     "285A.T": {"en": "Kioxia Holdings Corporation", "orig": "キオクシアホールディングス株式会社 (TYO: 285A)"},
     "6723.T": {"en": "Renesas Electronics Corporation", "orig": "ルネサスエレクトロニクス株式会社 (TYO: 6723)"},
-    "4062.T": {"en": "Ibiden Co., Ltd.", "orig": "イビデン株式会社 (TYO: 4062)"},
+    "4062.T": {"en": "Ibiden Co., Ltd.", "orig": "イ比電株式会社 (TYO: 4062)"},
     "6963.T": {"en": "ROHM Co., Ltd.", "orig": "ローム株式会社 (TYO: 6963)"},
     
     # Taiwan Semiconductor Leaders
@@ -117,10 +117,10 @@ def get_options_signal(ticker_obj):
         if exps:
             chain = ticker_obj.option_chain(exps)
             c_vol = float(chain.calls.volume.fillna(0).sum())
-            p_vol = float(chain.puts.volume.fillna(0).sum())
+            p_vol = float(chain.puts().volume.fillna(0).sum())
             if c_vol == 0 and p_vol == 0:
                 c_vol = float(chain.calls.openInterest.fillna(0).sum())
-                p_vol = float(chain.puts.openInterest.fillna(0).sum())
+                p_vol = float(chain.puts().openInterest.fillna(0).sum())
             ratio = c_vol / p_vol if p_vol > 0 else 1.0
             if ratio > 1.2:
                 return f"Bullish Flow Bias (Ratio: {ratio:.2f}x)"
@@ -175,7 +175,6 @@ def fetch_robust_market_data(ticker_symbol):
     try:
         t = yf.Ticker(ticker_symbol)
         
-        # 1. Resilient Price Discovery Engine via History Frames
         hist_recent = t.history(period="5d")
         if hist_recent.empty:
             return None, None, 0.0, "N/A", "USD", 0.0
@@ -183,7 +182,6 @@ def fetch_robust_market_data(ticker_symbol):
         recent_prices_list = hist_recent.Close.dropna().tolist()
         live_price = float(recent_prices_list.pop())
         
-        # 2. Currency Determination Base Mapping
         currency_map = {".T": "JPY", ".TW": "TWD", ".TWO": "TWD", ".KS": "KRW"}
         asset_currency = "USD"
         for suffix, curr in currency_map.items():
@@ -191,7 +189,6 @@ def fetch_robust_market_data(ticker_symbol):
                 asset_currency = curr
                 break
                 
-        # 3. Native Financial Fallbacks for info endpoints
         mcap = 0.0
         mean_t = live_price * 1.05
         high_t = live_price * 1.15
@@ -199,5 +196,8 @@ def fetch_robust_market_data(ticker_symbol):
         opinions = 0
         
         try:
+            inf = t.info
+            if inf and isinstance(inf, dict):
+                mcap = float(inf.get("marketCap", 0.0))
 
 
