@@ -82,4 +82,3 @@ for category, tickers_list in CATEGORIZED_TICKERS.items():
     dropdown_options.append(f"--- {category} ---")
     for ticker_item in tickers_list:
 
-
