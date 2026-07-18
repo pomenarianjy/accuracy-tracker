@@ -55,7 +55,7 @@ TICKER_DETAILS = {
     
     # Japan Semiconductor Leaders
     "8035.T": {"en": "Tokyo Electron Limited", "orig": "東京エレクトロン株式会社 (TYO: 8035)"},
-    "6857.T": {"en": "Advantest Corporation", "orig": "株式会社アドバンテスト (TYO: 6857)"},
+    "6857.T": {"en": "Advantest Corporation", "orig": "株式会社アド班テスト (TYO: 6857)"},
     "6146.T": {"en": "Disco Corporation", "orig": "株式会社ディスコ (TYO: 6146)"},
     "6920.T": {"en": "Lasertec Corporation", "orig": "レーザーテック株式会社 (TYO: 6920)"},
     "7735.T": {"en": "SCREEN Holdings Co., Ltd.", "orig": "SCREENホールディングス (TYO: 7735)"},
@@ -180,7 +180,6 @@ def fetch_robust_market_data(ticker_symbol):
         if hist_recent.empty:
             return None, None, 0.0, "N/A", "USD", 0.0
             
-        # FIXED: Extracted elements via native python list unpacking to completely avoid indexing errors
         recent_prices_list = hist_recent.Close.dropna().tolist()
         live_price = float(recent_prices_list.pop())
         
@@ -195,4 +194,10 @@ def fetch_robust_market_data(ticker_symbol):
         # 3. Native Financial Fallbacks for info endpoints
         mcap = 0.0
         mean_t = live_price * 1.05
+        high_t = live_price * 1.15
+        low_t = live_price * 0.90
+        opinions = 0
+        
+        try:
+
 
