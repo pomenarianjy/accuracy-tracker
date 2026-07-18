@@ -5,15 +5,15 @@ import datetime
 
 # 1. Clean Native Page Configuration
 st.set_page_config(
-    page_title="The Predictor Scorecard | Global Semi Hub",
+    page_title="The Predictors Scorecard",
     page_icon="🎯",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# 2. Executive Consumer Header
-st.title("🎯 The Multi-Source Predictor Scorecard")
-st.markdown("### Cross-Asset Consensus, Insider Tracking, and Global Performance Auditing Engine")
+# 2. Updated Executive Title (Customised Family Office Wording)
+st.title("🎯 The Predictors Scorecard")
+st.markdown("### Investment Views Accuracy Tracking, by A Single Family Office")
 st.divider()
 
 # 3. Explicitly Categorised Stocks Structure with Full Names
@@ -90,7 +90,7 @@ def get_options_signal(ticker_obj):
     try:
         expirations = ticker_obj.options
         if expirations:
-            opt_chain = ticker_obj.option_chain(expirations)
+            opt_chain = ticker_obj.option_chain(expirations[0])
             calls_vol = opt_chain.calls['volume'].sum()
             puts_vol = opt_chain.puts['volume'].sum()
             ratio = calls_vol / puts_vol if puts_vol > 0 else 1.0
