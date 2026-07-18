@@ -52,7 +52,7 @@ TICKER_DETAILS = {
     
     # Japan Semiconductor Leaders
     "8035.T": {"en": "Tokyo Electron Limited", "orig": "東京エレクトロン株式会社 (TYO: 8035)", "symbol": "8035.T"},
-    "6857.T": {"en": "Advantest Corporation", "orig": "株式会社アドバンテスト (TYO: 6857)", "symbol": "6857.T"},
+    "6857.T": {"en": "Advantest Corporation", "orig": "株式会社アド반테스트 (TYO: 6857)", "symbol": "6857.T"},
     "6146.T": {"en": "Disco Corporation", "orig": "株式会社ディスコ (TYO: 6146)", "symbol": "6146.T"},
     "6920.T": {"en": "Lasertec Corporation", "orig": "レーザーテック株式会社 (TYO: 6920)", "symbol": "6920.T"},
     "7735.T": {"en": "SCREEN Holdings Co., Ltd.", "orig": "SCREENホールディングス (TYO: 7735)", "symbol": "7735.T"},
@@ -132,7 +132,7 @@ def get_media_signal(ticker_obj):
         pass
     return "Neutral Media Coverage Profile"
 
-# 5. Build Dropdown Layout Map
+# 4. Correctly Closed Section 5 Dropdown Layout Mapping
 dropdown_options = []
 label_to_ticker = {}
 
@@ -150,7 +150,7 @@ selected_display = st.selectbox(
     index=dropdown_options.index("   META | Meta Platforms Inc.") if "   META | Meta Platforms Inc." in dropdown_options else 1
 )
 
-# 6. Core Multi-Source Pipeline Execution
+# 5. Core Multi-Source Pipeline Execution
 @st.cache_data(ttl=1800)
 def compile_all_sources(ticker_symbol):
     try:
