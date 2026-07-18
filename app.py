@@ -80,11 +80,8 @@ with col_main:
     filtered_df = st.session_state.prediction_db[st.session_state.prediction_db['Stock Code'] == user_stock]
     
     if not filtered_df.empty:
-        # Pull the asset name text safely from the array
-        asset_name = filtered_df['Asset Description'].values[0]
+        asset_name = filtered_df['Asset Description'].values
         st.markdown(f"##### Showing Audits For: **{user_stock} ({asset_name})**")
-        
-        # Display clean, straightforward native dataframe
         st.dataframe(
             filtered_df[['Predictor Name', 'Platform Tier', 'Historic Accuracy (%)', 'Specific Prediction', 'Status']],
             use_container_width=True,
@@ -94,10 +91,12 @@ with col_main:
         st.error("No data engine records map to this choice.")
 
 with col_side:
-    with st.container(border=True):
-        st.markdown("##### 📁 Verification Feeds")
-        st.caption("🔒 **Primary Hardware Logs Verified**")
-        st.caption("Cross-checked via foundry shipment sheets, SEC 13F logs, financial terminals, and public signatures.")
+    st.markdown("##### 📁 Verification Feeds")
+    st.caption("🔒 **Primary Hardware Logs Verified**")
+    st.caption("Cross-checked via foundry shipment sheets, SEC 13F logs, financial terminals, and public signatures.")
+    st.divider()
     
+    # FIXED: Replaced st.form structure with simple inputs and a standard button to prevent indentation bugs entirely
     st.markdown("##### 📥 Log an Audited Claim Entry")
-    with st.form("new_prediction_form", clear_on_submit=True):
+    form_ticker = st.selectbox("Select Target Asset Code:", options=AVAILABLE_TICKERS, key="sb_ticker")
+
