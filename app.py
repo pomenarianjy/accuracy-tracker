@@ -62,7 +62,7 @@ TICKER_DETAILS = {
     "6525.T": {"en": "Kokusai Electric Corporation", "orig": "株式会社KOKUSAI ELECTRIC (TYO: 6525)"},
     "285A.T": {"en": "Kioxia Holdings Corporation", "orig": "キオクシアホールディングス株式会社 (TYO: 285A)"},
     "6723.T": {"en": "Renesas Electronics Corporation", "orig": "ルネサスエレクトロニクス株式会社 (TYO: 6723)"},
-    "4062.T": {"en": "Ibiden Co., Ltd.", "orig": "イビデン株式会社 (TYO: 4062)"},
+    "4062.T": {"en": "Ibiden Co., Ltd.", "orig": "イ比電株式会社 (TYO: 4062)"},
     "6963.T": {"en": "ROHM Co., Ltd.", "orig": "ローム株式会社 (TYO: 6963)"},
     
     # Taiwan Semiconductor Leaders
@@ -117,7 +117,6 @@ def get_options_signal(ticker_obj):
         if exps:
             chain = ticker_obj.option_chain(exps)
             c_vol = float(chain.calls.volume.fillna(0).sum())
-            # FIXED: Removed the trailing illegal method parenthesis behind chain.puts attribute
             p_vol = float(chain.puts.volume.fillna(0).sum())
             if c_vol == 0 and p_vol == 0:
                 c_vol = float(chain.calls.openInterest.fillna(0).sum())
@@ -195,4 +194,9 @@ def fetch_robust_market_data(ticker_symbol):
         # 3. Native Financial Fallbacks for info endpoints
         mcap = 0.0
         mean_t = live_price * 1.05
+        high_t = live_price * 1.15
+        low_t = live_price * 0.90
+        opinions = 0
+        
+        try:
 
