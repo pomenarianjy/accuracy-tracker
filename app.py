@@ -45,7 +45,7 @@ TICKER_DETAILS = {
     "AMKR": {"en": "Amkor Technology Inc.", "orig": "Amkor Technology Inc.", "base": 29.50, "currency": "USD", "ytd": "-2.10%", "opinions": 11, "m1": 14.2, "m2": -12.0, "m3": 22.4},
     "INTC": {"en": "Intel Corporation", "orig": "Intel Corporation", "base": 23.80, "currency": "USD", "ytd": "-38.40%", "opinions": 33, "m1": -4.2, "m2": -45.1, "m3": -12.0},
     "8035.T": {"en": "Tokyo Electron Limited", "orig": "東京エレクトロン株式会社", "base": 23450.0, "currency": "JPY", "ytd": "+16.80%", "opinions": 22, "m1": 22.4, "m2": -11.2, "m3": 45.1},
-    "6857.T": {"en": "Advantest Corporation", "orig": "株式会社アド반테스트", "base": 9180.0, "currency": "JPY", "ytd": "+48.20%", "opinions": 21, "m1": 34.2, "m2": -6.0, "m3": 59.8},
+    "6857.T": {"en": "Advantest Corporation", "orig": "株式会社アドバンテスト", "base": 9180.0, "currency": "JPY", "ytd": "+48.20%", "opinions": 21, "m1": 34.2, "m2": -6.0, "m3": 59.8},
     "6146.T": {"en": "Disco Corporation", "orig": "株式会社ディスコ", "base": 41200.0, "currency": "JPY", "ytd": "+32.40%", "opinions": 19, "m1": 29.4, "m2": -8.1, "m3": 44.2},
     "6920.T": {"en": "Lasertec Corporation", "orig": "レーザーテック株式会社", "base": 18420.0, "currency": "JPY", "ytd": "-14.20%", "opinions": 20, "m1": 12.1, "m2": -24.0, "m3": 19.5},
     "7735.T": {"en": "SCREEN Holdings Co., Ltd.", "orig": "SCREENホールディングス", "base": 9760.0, "currency": "JPY", "ytd": "+11.40%", "opinions": 16, "m1": 18.7, "m2": -12.3, "m3": 28.4},
@@ -66,7 +66,7 @@ TICKER_DETAILS = {
     "005930.KS": {"en": "Samsung Electronics Co., Ltd.", "orig": "삼성전자주식회사", "base": 57800.0, "currency": "KRW", "ytd": "-14.30%", "opinions": 35, "m1": 11.0, "m2": -21.4, "m3": 22.5}
 }
 
-# 3. Clean Flattened Options Selector List
+# 3. Dynamic Selector Setup
 ticker_keys = list(TICKER_DETAILS.keys())
 display_options = [f"{k} | {TICKER_DETAILS[k]['en']}" for k in ticker_keys]
 
@@ -76,7 +76,7 @@ selected_option = st.selectbox(
     index=0
 )
 
-# 4. Extract Selected Parameters Safe Engine
+# 4. Correct String Extraction Layer
 selected_ticker = selected_option.split(" | ")[0]
 static_details = TICKER_DETAILS[selected_ticker]
 
@@ -93,5 +93,6 @@ pct_mean = ((mean_t / live_price) - 1.0) * 100.0
 pct_high = ((high_t / live_price) - 1.0) * 100.0
 pct_low = ((low_t / live_price) - 1.0) * 100.0
 
-# 5. Core Tables Generation Logic
+# 5. Compiled Core Matrix Layout
 scorecard_list = [
+
