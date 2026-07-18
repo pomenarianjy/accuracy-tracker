@@ -109,19 +109,18 @@ st.markdown("##### 📁 Audited Research Institution & Consensus View Rows")
 st.dataframe(df_scorecard, use_container_width=True, hide_index=True)
 st.divider()
 
-# 6. Last 10 Trailing Years Performance Data Sheet
-h1 = {"Horizon Profile": "2025 Trailing Performance", "Audited Yield Status": m1}
-h2 = {"Horizon Profile": "2024 Trailing Performance", "Audited Yield Status": m2}
-h3 = {"Horizon Profile": "2023 Trailing Performance", "Audited Yield Status": m3}
-h4 = {"Horizon Profile": "2022 Trailing Performance", "Audited Yield Status": "-14.20%"}
-h5 = {"Horizon Profile": "2021 Trailing Performance", "Audited Yield Status": "+28.50%"}
-h6 = {"Horizon Profile": "2020 Trailing Performance", "Audited Yield Status": "+14.10%"}
-h7 = {"Horizon Profile": "2019 Trailing Performance", "Audited Yield Status": "-5.30%"}
-h8 = {"Horizon Profile": "2018 Trailing Performance", "Audited Yield Status": "+22.40%"}
-h9 = {"Horizon Profile": "2017 Trailing Performance", "Audited Yield Status": "+11.20%"}
-h10 = {"Horizon Profile": "2016 Trailing Performance", "Audited Yield Status": "-8.50%"}
+# 6. Sanitized Last 10 Years Performance Data Sheet
+h1 = {"Horizon Profile": "2025 Performance", "Audited Yield Status": m1}
+h2 = {"Horizon Profile": "2024 Performance", "Audited Yield Status": m2}
+h3 = {"Horizon Profile": "2023 Performance", "Audited Yield Status": m3}
+h4 = {"Horizon Profile": "2022 Performance", "Audited Yield Status": "-14.20%"}
+h5 = {"Horizon Profile": "2021 Performance", "Audited Yield Status": "+28.50%"}
+h6 = {"Horizon Profile": "2020 Performance", "Audited Yield Status": "+14.10%"}
+h7 = {"Horizon Profile": "2019 Performance", "Audited Yield Status": "-5.30%"}
+h8 = {"Horizon Profile": "2018 Performance", "Audited Yield Status": "+22.40%"}
+h9 = {"Horizon Profile": "2017 Performance", "Audited Yield Status": "+11.20%"}
+h10 = {"Horizon Profile": "2016 Performance", "Audited Yield Status": "-8.50%"}
 
 df_history = pd.DataFrame([h1, h2, h3, h4, h5, h6, h7, h8, h9, h10])
-st.markdown("##### ⏳ Historical Stock Performance Matrices (Last 10 Trailing Years)")
+st.markdown("##### ⏳ Historical Stock Performance Matrices (Last 10 Years)")
 st.dataframe(df_history, use_container_width=True, hide_index=True)
-
